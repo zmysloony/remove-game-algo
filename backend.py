@@ -4,14 +4,6 @@ from random import randrange
 from classes import *
 import time
 
-def algo_one(game_array):
-    temp = deepcopy(game_array)
-    res = 0
-    while temp.left != 0:
-        res += temp.remove_num(temp.get_max_gain())
-        #print("\n\n", temp.nums, "\n", temp.gains)
-    return res
-
 
 def find_max_sum(game_array):
     arr = game_array.nums
@@ -101,12 +93,14 @@ def gen_random(size, min, max):
 
 def main():
     #TODO cleanup shit
-    i = GameArray([-15,	-28,	-69,	-2,	-33,	0,	21,	24,	96,	12,	55])
+    i = GameArray([-15,	-28, -28, -29,	-69,	-2,	-33,	0,	21,	24,	96,	12,	12, 13, 14, 14,55])
     #i = GameArray([54,	41,	0	,67	,36,	69,	90	,93	,165	,81,	124])
     DELETEmin = min(i.nums)
     # print(i.nums)
-    i.preprocess(1)
-    i.calculate_gains()
+    i.preprocess(0)
+    print(i.nums)
+    i.print()
+    print(i.calc_max_score())
     # print("\n\n", i.nums,"\n", i.gains)
     # print(algo_one(game_array=i))
     #a = find_max_sum(game_array=i)
@@ -114,33 +108,33 @@ def main():
     # print (sum)
     time_sum = 0
     wrong = 0
-    for t in range(100):
-        randomarray = gen_random(10,-2,5)
-        # randomarray = [-1, 4, -2, 0, 3, -2, 4, 3, -2, 4]
-
-        print("unprocessed: ", randomarray)
-        randomgamearray = GameArray(randomarray)
-        randomgamearray2 = GameArray(copy(randomarray))
-        startTime = time.perf_counter()
-        randomgamearray.preprocess(0)
-        randomgamearray.calculate_gains()
-
-        DELETEmin = min(randomgamearray.nums)
-        print("radomgamearray preprocessed: ", randomgamearray.nums)
-        randomgamearray2.preprocess(0)
-        randomgamearray2.calculate_gains()
-        result = find_max_sum2(randomgamearray)
-        sum, how = result
-        sum = sum + (DELETEmin-1)*how
-        print("randomgamearray2 preprocessed: ", randomgamearray2.nums)
-        sumalgo1 = algo_one(randomgamearray2)
-        stopTime = time.perf_counter()
-        print(result, "\n", "robber: ", sum, "algo1: ", sumalgo1, "\n")
-        time_sum += stopTime-startTime
-        if sum != sumalgo1:
-            wrong += 1
-    print(time_sum)
-    print("wrong: ", wrong)
+    # for t in range(100):
+    #     randomarray = gen_random(10,-2,5)
+    #     # randomarray = [-1, 4, -2, 0, 3, -2, 4, 3, -2, 4]
+    #
+    #     print("unprocessed: ", randomarray)
+    #     randomgamearray = GameArray(randomarray)
+    #     randomgamearray2 = GameArray(copy(randomarray))
+    #     startTime = time.perf_counter()
+    #     randomgamearray.preprocess(0)
+    #     randomgamearray.calculate_gains()
+    #
+    #     DELETEmin = min(randomgamearray.nums)
+    #     print("radomgamearray preprocessed: ", randomgamearray.nums)
+    #     randomgamearray2.preprocess(0)
+    #     randomgamearray2.calculate_gains()
+    #     result = find_max_sum2(randomgamearray)
+    #     sum, how = result
+    #     sum = sum + (DELETEmin-1)*how
+    #     print("randomgamearray2 preprocessed: ", randomgamearray2.nums)
+    #     sumalgo1 = algo_one(randomgamearray2)
+    #     stopTime = time.perf_counter()
+    #     print(result, "\n", "robber: ", sum, "algo1: ", sumalgo1, "\n")
+    #     time_sum += stopTime-startTime
+    #     if sum != sumalgo1:
+    #         wrong += 1
+    # print(time_sum)
+    # print("wrong: ", wrong)
     return 0
 
 
