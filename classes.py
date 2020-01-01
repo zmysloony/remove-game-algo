@@ -2,7 +2,7 @@ from copy import copy, deepcopy
 
 
 def add(*args):
-    args = [a for a in args if not a is None]
+    args = [a for a in args if a is not None]
     return 2*args[0] - sum(args) if args else None
 
 
@@ -91,7 +91,7 @@ class GameArray:
                 elif i == prev + 1:
                     prev = i
                     new_nums.append(i)
-                else: #new subarray
+                else: # new subarray
                     if len(new_nums) is not 0: # decides which algo to use
                         self.sublists.append(Sublist(copy(new_nums), 1 if new_nums[0] <= 0 else 0))
                     new_nums.clear()
