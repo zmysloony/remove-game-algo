@@ -1,6 +1,9 @@
 from copy import copy, deepcopy
 
 
+debug = False
+
+
 def add(*args):
     args = [a for a in args if a is not None]
     return 2*args[0] - sum(args) if args else None
@@ -30,9 +33,9 @@ class Sublist:
         if len(self.nums) == 1:
             return
         for i in range(len(self.nums)):
-            if i is 0:
+            if i == 0:
                 self.gains[i] = add(self.nums[i], self.nums[i+1])
-            elif i is len(self.nums)-1:
+            elif i == (len(self.nums)-1):
                 self.gains[i] = add(self.nums[i], self.nums[i-1])
             else:
                 self.gains[i] = add(self.nums[i], self.nums[i-1], self.nums[i+1])
@@ -110,9 +113,6 @@ class GameArray:
             else:
                 total += algo_one(i, 0)
         return total
-
-
-debug = False
 
 
 def printd(*x):
