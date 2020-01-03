@@ -1,5 +1,5 @@
 from copy import copy, deepcopy
-
+import numpy as np
 
 debug = False
 
@@ -13,13 +13,14 @@ class Sublist:
     alg_type = 0 # 1 - algo1; 0 - house robber
     nums = []
     left = 0
-    gains = []
+    gains = np.array
 
     def __init__(self, nums, alg_type):
         self.alg_type = alg_type
         self.nums = nums
+
         self.left = len(self.nums)
-        self.gains = [0] * len(self.nums)
+        self.gains = np.zeros((len(nums),))
         self.calculate_gains()
         self.print()
 
@@ -27,7 +28,8 @@ class Sublist:
         return ("robber: " if self.alg_type is 0 else "algo1: ") + str(self.nums) + ", "
 
     def append(self, n):
-        self.nums.append(n)
+        # self.nums.append(n)
+        np.append(self.nums, n)
 
     def calculate_gains(self):
         if len(self.nums) == 1:
@@ -42,11 +44,9 @@ class Sublist:
 
     def get_max_gain(self):
         maxg = None
-        maxi = None
+        maxi = 0
         for i in range(len(self.nums)):
-            if self.nums[i] is None:
-                continue
-            elif maxg is None or self.gains[i] > maxg:
+            if self.nums[i] is not None and (maxg is None or self.gains[i] > maxg):
                 maxg = self.gains[i]
                 maxi = i
         return maxi
@@ -66,6 +66,54 @@ class Sublist:
             self.nums[i + 1] = None
             self.left -= 1
         return ret
+
+    def max_score(self):
+        printd("\narray:",self.nums)
+        if self.alg_type == 0:
+            return house_robber(self)
+        elif self.nums[len(self.nums) - 1] > 0:
+            scores = []
+            # if zero is present - three ways to split negative and positive number
+            # assuming t[i] is 0, then: 1. delete t[i], 2. delete t[i-1], 3. delete t[i+1]
+
+            # pre-delete 0
+            score = 0
+            zero_i = 0
+            while self.nums[zero_i] != 0:
+                zero_i += 1
+            printd(Sublist(self.nums[0:zero_i-1], 1).nums, Sublist(self.nums[zero_i+2:], 0).nums)
+            score += algo_one(Sublist(self.nums[0:zero_i-1], 1), 0)
+            score += house_robber(Sublist(self.nums[zero_i+2:], 0))
+            scores.append(score)
+
+            # pre-delete one before 0
+            score = 0
+            score += self.nums[zero_i-1]
+            score += algo_one(Sublist(self.nums[0:zero_i-2], 1), 0)
+            printd(Sublist(self.nums[0:zero_i-2], 1).nums, Sublist(self.nums[zero_i+1:], 0).nums)
+            score += house_robber(Sublist(self.nums[zero_i+1:], 0))
+            scores.append(score)
+
+            #pre-delete
+            score = 0
+            score += self.nums[zero_i+1]
+            printd(Sublist(self.nums[0:zero_i], 1).nums, Sublist(self.nums[zero_i+3:], 0).nums)
+            score += algo_one(Sublist(self.nums[0:zero_i], 1), 0)
+            score += house_robber(Sublist(self.nums[zero_i+3:], 0))
+            scores.append(score)
+
+            algo_one_score = -1000#algo_one(self, 0)
+            printd("scores with zero split:", scores)
+            printd("compared to normal", algo_one_score)
+            if algo_one_score > max(scores):
+                raise NameError("ZJEBANE split0: "+str(max(scores))+" normal: "+str(algo_one_score))
+            return max(scores)
+        else:
+            self.calculate_gains()
+            sc = algo_one(self, 0)
+            printd("just algo1:", sc)
+            return sc
+
 
 
 class GameArray:
@@ -103,15 +151,14 @@ class GameArray:
 
             if len(new_nums) is not 0:  # decides which algo to use
                 self.sublists.append(Sublist(copy(new_nums), 1 if new_nums[0] <= 0 else 0))
+        # self.sublists = []
+        # self.sublists.append(Sublist([-3, -2, -1, 0, 1, 2, 3, 4, 20, 24, 7, 8, 9], 1))
         self.left = len(self.nums)
 
     def calc_max_score(self):
         total = 0
-        for i in self.sublists:
-            if i.alg_type == 0:
-                total += house_robber(i)
-            else:
-                total += algo_one(i, 0)
+        for l in self.sublists:
+            total += l.max_score()
         return total
 
 
@@ -128,11 +175,13 @@ def algo_one(sublist, splitnr):
     temp.gains = copy(sublist.gains)
     res = 0
 
-
     while temp.left > 0:
-        m = temp.gains[temp.get_max_gain()]
-        max_indices = [j for j, k in enumerate(temp.gains) if k == m]
-
+        max_gain_index = temp.get_max_gain()
+        m = temp.gains[max_gain_index]
+        if m is not int:
+            max_indices = [j for j, k in enumerate(temp.gains) if (k == m and temp.nums[j] is not None)]
+        else:
+            max_indices = max_gain_index
         printd("\n", "\t"*splitnr, temp.nums)
         printd("\t"*splitnr,"gains:", temp.gains)
         printd("\t"*splitnr,"left:", temp.left)
@@ -149,12 +198,12 @@ def algo_one(sublist, splitnr):
                     removed_num = cp.nums[i]
 
                     printd("\t" * splitnr, "[SPLITTING " + str(splitnr) + "] on " + str(i) + ": ")
-                    printd("\t"*splitnr,"score after split", res + removed_num)
+                    printd("\t"*splitnr, "score after split", res + removed_num)
 
                     cp.remove_num(i)
                     # print("algo_one(cp)", algo_one(cp), "removed num", removed_num)
                     path_scores.append(removed_num + algo_one(cp, splitnr))
-            stringmax = "return from recursive " + str(splitnr) + ": ";
+            stringmax = "return from split " + str(splitnr) + ": "
             for z in path_scores:
                 stringmax += str(z) + " or "
             printd("\t"*(splitnr-1), stringmax)
@@ -162,7 +211,7 @@ def algo_one(sublist, splitnr):
         res += temp.remove_num(temp.get_max_gain())
         printd("\t"*splitnr,"score", res)
         #print("\n\n", temp.nums, "\n", temp.gains)
-    printd("\t"*splitnr,"return from normal", res);
+    printd("\t"*splitnr,"return from normal", res)
     return res
 
 
@@ -178,4 +227,5 @@ def house_robber(game_array):
         excl = new_excl
     # return max of incl and excl
     return excl if excl > incl else incl
+
 

@@ -6,8 +6,24 @@ import sys
 import time
 import matplotlib.pyplot as plot
 
+
 def gen_random(size, min_num, max_num):
+    # return [-3, -2, -2, -1, -1, -1, 0, 1, 2, 3]
+    # return [-3, -4, -4, 0, 1, 4, 3, 16, 10, 6, 7]
+    # return   [-3, -6, -4, 0, 2, 2, 15]
+    # return [-3, -2, -1, 0, 1, 2, 3, 4, 20, 24, 7, 8, 9]
+
     r = []
+    if evil_mode:
+        z = min_num
+        continue_chance = 40
+        for i in range(size):
+            r.append(z)
+            if randrange(0, 100, 1) <= continue_chance: # don't increase the number (makes duplicates)
+                z += 1
+        # print(r)
+        return r
+
     for i in range(size):
         r.append(randrange(min_num, max_num, 1))
     return r
@@ -15,6 +31,7 @@ def gen_random(size, min_num, max_num):
 
 def mode_one():    # parse lines into number arrays
     for line in sys.stdin:
+        line = line.replace(',', '')
         strings = line.split()
         nums = []
         try:
@@ -107,23 +124,16 @@ def mode_four(l, l_step, r, n, e, pairs):
 def test():
     # tricky list to test score
     # z = GameArray([-1, -2, -1, 1, 2, 3, 0, 3, 3, 0])
-    # z.preprocess(0)
-    # print(z.calc_max_score())
+    z = GameArray([-3, -2, -2, -1, -1, -1, 0, 1, 2, 3])
+    z.preprocess(0)
+    print(z.calc_max_score())
 
-    time_sum = 0
-
-    for t in range(20000):
-        rarray = GameArray(gen_random(10, 1, 5))
-        start_time = time.perf_counter()
-        rarray.preprocess(0)
-        rarray.calc_max_score()
-        time_sum += time.perf_counter() - start_time
-    print("time sum:", time_sum, "s")
     return 0
 
 
 verbose_mode = False
 timer_mode = False
+evil_mode = False
 
 
 if __name__ == "__main__":
@@ -135,10 +145,12 @@ if __name__ == "__main__":
     parser.add_argument('-e', '--exponent', help='List grows <value> times bigger with each step.', required=False,
                         default=1)
     parser.add_argument('-r', '--repeats', help='Repeats per step.', required=False, default='10')
-    parser.add_argument('-v', '--verbose', help='More information.', required=False, action='store_true')
-    parser.add_argument('-t', '--timer', help='Show time spent on main algorithm.', required=False, action='store_true')
     parser.add_argument('--min', help='Minimum integer to generate.', required=False, default='-3')
     parser.add_argument('--max', help='Maximum integer to generate.', required=False, default='3')
+    parser.add_argument('-v', '--verbose', help='More information.', required=False, action='store_true')
+    parser.add_argument('-t', '--timer', help='Show time spent on main algorithm.', required=False, action='store_true')
+    parser.add_argument('--evil', help='Random data generator stops being random and generates long lists of '
+                                       'neighbouring numbers', required=False, action='store_true')
     # TODO more args
     args = parser.parse_args()
 
@@ -146,6 +158,8 @@ if __name__ == "__main__":
         verbose_mode = True
     if args.timer:
         timer_mode = True
+    if args.evil:
+        evil_mode = True
 
     if args.mode is '1':    # nothing required, only stdin (can be used interactively)
         mode_one()
@@ -162,12 +176,18 @@ if __name__ == "__main__":
             print("Every argument value needs to be an integer!")
     elif args.mode is '4':
         val_pairs = []
-        try:
-            for line in sys.stdin:
-                strings = line.split()
-                val_pairs.append((int(strings[0]), int(strings[1])))
+        # try:
+        #     for line in sys.stdin:
+        #         strings = line.split()
+        #         val_pairs.append((int(strings[0]), int(strings[1])))
+        #
+        #     mode_four(int(args.length), int(args.step), int(args.repeats), int(args.number), int(args.exponent),
+        #               val_pairs)
+        # except ValueError:
+        #     print("Incorrect data (check for non-integers).")
+        for line in sys.stdin:
+            strings = line.split()
+            val_pairs.append((int(strings[0]), int(strings[1])))
 
-            mode_four(int(args.length), int(args.step), int(args.repeats), int(args.number), int(args.exponent), val_pairs)
-        except ValueError:
-            print("Incorrect data (check for non-integers).")
-
+        mode_four(int(args.length), int(args.step), int(args.repeats), int(args.number), int(args.exponent),
+                  val_pairs)
