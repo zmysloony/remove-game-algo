@@ -121,7 +121,7 @@ def mode_four(ls, l_step, r, n, e, pairs):
         plot.plot(sizes, times, label=str(min_num)+" to "+str(max_num), linestyle='-', lw=2, color=c)
         plot.plot(raws, rawt, marker='+', ms=4, linestyle='', color=c)
 
-    plot.title(str(r) + " samples per point")
+    plot.title(str(r) + " samples per point" + (" [single chain]" if evil_mode else ""))
     plot.xlabel("list size")
     plot.ylabel("time [s]")
     plot.legend()
