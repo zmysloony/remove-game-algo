@@ -1,5 +1,6 @@
 from copy import copy
 import numpy as np
+import findmax
 
 debug = False
 
@@ -25,7 +26,7 @@ class Sublist:
         self.nums = nums
 
         self.left = len(self.nums)
-        self.gains = np.zeros((len(nums),))
+        self.gains = np.zeros((len(nums),), dtype="long")
         self.calculate_gains()
         self.print()
 
@@ -51,9 +52,9 @@ class Sublist:
         ret = self.nums[i]
         self.left -= 1
         self.nums[i] = None
-        if i > 1:
+        if i > 1 and self.nums[i-2] is not None:
             self.gains[i - 2] = add(self.nums[i - 2], self.nums[i - 3] if i - 2 != 0 else 0)
-        if i < len(self.nums) - 3:
+        if i < len(self.nums) - 3 and self.nums[i+2] is not None:
             self.gains[i + 2] = add(self.nums[i + 2], self.nums[i + 3] if i + 3 != len(self.nums) else 0)
         if i > 0 and self.nums[i - 1] is not None:
             self.nums[i - 1] = None
@@ -64,6 +65,8 @@ class Sublist:
         return ret
 
     def max_score(self):
+        if len(self.nums) == 1:
+            return self.nums[0]
         printd("\narray:", self.nums)
         if self.alg_type == 0:
             return house_robber(self)
@@ -133,13 +136,13 @@ class GameArray:
                     new_nums.append(i)
                 else:   # new subarray
                     if len(new_nums) is not 0:  # decides which algo to use
-                        self.sublists.append(Sublist(copy(new_nums), 1 if new_nums[0] <= 0 else 0))
+                        self.sublists.append(Sublist(copy(new_nums), 1 if new_nums[0] < 0 else 0))
                     new_nums.clear()
                     prev = i
                     new_nums.append(i)
 
             if len(new_nums) is not 0:  # decides which algo to use
-                self.sublists.append(Sublist(copy(new_nums), 1 if new_nums[0] <= 0 else 0))
+                self.sublists.append(Sublist(copy(new_nums), 1 if new_nums[0] < 0 else 0))
         self.left = len(self.nums)
 
     def calc_max_score(self):
@@ -169,6 +172,8 @@ def find_to_none(sublist):
 
 
 def algo_two(sublist, splitnr):
+    if sublist.left == 0:
+        return 0
     temp = Sublist.__new__(Sublist)
     temp.left = sublist.left
     temp.nums = copy(sublist.nums)
@@ -176,7 +181,8 @@ def algo_two(sublist, splitnr):
     res = 0
 
     while temp.left > 0:
-        max_indices = find_to_none(temp)
+        # max_indices = find_to_none(temp)
+        max_indices = findmax.find_to_none(temp.nums, temp.gains)
         printd("\n", "\t"*splitnr, temp.nums)
         printd("\t"*splitnr, "gains:", temp.gains)
         printd("\t"*splitnr, "left:", temp.left)

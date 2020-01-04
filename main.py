@@ -96,7 +96,8 @@ def mode_three(ls, l_step, r, n, min_num, max_num, e, do_plot=True):
             raw_times.append(nt)
             raw_sizes.append(size)
             t += nt
-        print("Length:", size, "Time:", t/r, "s")
+        if verbose_mode:
+            print("Length:", size, "Time:", t/r, "s")
         sizes.append(size)
         times.append(t/r)
     if do_plot:
@@ -113,6 +114,8 @@ def mode_four(ls, l_step, r, n, e, pairs):
     ax = plot.gca()
     for pair in pairs:
         min_num, max_num = pair
+        if verbose_mode:
+            print("min:", min_num, "\tmax:", max_num)
         times, sizes, rawt, raws = mode_three(ls, l_step, r, n, min_num, max_num, e, do_plot=False)
         c = next(ax._get_lines.prop_cycler)['color']
         plot.plot(sizes, times, label=str(min_num)+" to "+str(max_num), linestyle='-', lw=2, color=c)
