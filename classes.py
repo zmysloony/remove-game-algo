@@ -47,15 +47,6 @@ class Sublist:
             else:
                 self.gains[i] = add(self.nums[i], self.nums[i-1], self.nums[i+1])
 
-    def get_max_gain(self):
-        maxg = None
-        maxi = 0
-        for i in range(len(self.nums)):
-            if self.nums[i] is not None and (maxg is None or self.gains[i] > maxg):
-                maxg = self.gains[i]
-                maxi = i
-        return maxi
-
     def remove_num(self, i):
         ret = self.nums[i]
         self.left -= 1
@@ -194,19 +185,18 @@ def algo_two(sublist, splitnr):
             splitnr += 1
             path_scores = []
             for i in max_indices:   # for each best removal value, calculate the best path
-                if temp.nums[i] is not None:
-                    cp = Sublist.__new__(Sublist)
-                    cp.nums = copy(temp.nums)
-                    cp.gains = copy(temp.gains)
-                    cp.left = copy(temp.left)
-                    removed_num = cp.nums[i]
+                cp = Sublist.__new__(Sublist)
+                cp.nums = copy(temp.nums)
+                cp.gains = copy(temp.gains)
+                cp.left = copy(temp.left)
+                removed_num = cp.nums[i]
 
-                    printd("\t" * splitnr, "[SPLITTING " + str(splitnr) + "] on " + str(i) + ": ")
-                    printd("\t"*splitnr, "score after split", res + removed_num)
+                printd("\t" * splitnr, "[SPLITTING " + str(splitnr) + "] on " + str(i) + ": ")
+                printd("\t"*splitnr, "score after split", res + removed_num)
 
-                    cp.remove_num(i)
-                    # print("algo_one(cp)", algo_one(cp), "removed num", removed_num)
-                    path_scores.append(removed_num + algo_two(cp, splitnr))
+                cp.remove_num(i)
+                # print("algo_one(cp)", algo_one(cp), "removed num", removed_num)
+                path_scores.append(removed_num + algo_two(cp, splitnr))
             stringmax = "return from split " + str(splitnr) + ": "
             for z in path_scores:
                 stringmax += str(z) + " or "
