@@ -8,18 +8,12 @@ import matplotlib.pyplot as plot
 
 
 def gen_random(size, min_num, max_num):
-    # return [-3, -2, -2, -1, -1, -1, 0, 1, 2, 3]
-    # return [-3, -4, -4, 0, 1, 4, 3, 16, 10, 6, 7]
-    # return   [-3, -6, -4, 0, 2, 2, 15]
-    # return [-3, -2, -1, 0, 1, 2, 3, 4, 20, 24, 7, 8, 9]
-
     r = []
     if evil_mode:
         z = min_num
-        continue_chance = 40
         for i in range(size):
             r.append(z)
-            if randrange(0, 100, 1) <= continue_chance: # don't increase the number (makes duplicates)
+            if randrange(0, 100, 1) <= 40:  # don't increase the number (makes duplicates)
                 z += 1
         # print(r)
         return r
@@ -30,12 +24,12 @@ def gen_random(size, min_num, max_num):
 
 
 def mode_one():    # parse lines into number arrays
-    for line in sys.stdin:
-        line = line.replace(',', '')
-        strings = line.split()
+    for fl in sys.stdin:
+        fl = fl.replace(',', '')
+        fls = fl.split()
         nums = []
         try:
-            for st in strings:
+            for st in fls:
                 nums.append(int(st))
         except ValueError:
             print("Incorrect data (check for non-integers).")
@@ -54,11 +48,11 @@ def mode_one():    # parse lines into number arrays
             print("time sum:", t, "s")
 
 
-def mode_two(l, n, min_num, max_num):
+def mode_two(ls, n, min_num, max_num):
     if timer_mode:
         t = 0
         for i in range(n):
-            rarray = GameArray(gen_random(l, min_num, max_num))
+            rarray = GameArray(gen_random(ls, min_num, max_num))
             start_time = time.perf_counter()
             rarray.preprocess(0)
             s = rarray.calc_max_score()
@@ -73,7 +67,7 @@ def mode_two(l, n, min_num, max_num):
             print("time sum:", t, "s")
     else:
         for i in range(n):
-            rarray = GameArray(gen_random(l, min_num, max_num))
+            rarray = GameArray(gen_random(ls, min_num, max_num))
             rarray.preprocess(0)
             s = rarray.calc_max_score()
             if verbose_mode:
@@ -83,38 +77,48 @@ def mode_two(l, n, min_num, max_num):
                 print(s)
 
 
-# l - starting list length, l_step - increments by that amount with each step, r - repeats for the same step
-def mode_three(l, l_step, r, n, min_num, max_num, e, do_plot=True):
+# ls - starting list length, l_step - increments by that amount with each step, r - repeats for the same step
+def mode_three(ls, l_step, r, n, min_num, max_num, e, do_plot=True):
     times = []
     sizes = []
+    raw_times = []
+    raw_sizes = []
     for i in range(n):
-        size = (l + i*l_step)*(e**i)
+        size = (ls + i*l_step)*(e**i)
         t = 0
         for j in range(r):
-            ga = GameArray(gen_random(size, min_num, max_num))
+            rand = gen_random(size, min_num, max_num)
             start_time = time.perf_counter()
+            ga = GameArray(rand)
             ga.preprocess(0)
             ga.calc_max_score()
-            t += time.perf_counter() - start_time
+            nt = time.perf_counter() - start_time
+            raw_times.append(nt)
+            raw_sizes.append(size)
+            t += nt
         print("Length:", size, "Time:", t/r, "s")
         sizes.append(size)
         times.append(t/r)
     if do_plot:
-        plot.plot(sizes, times, label=str(min_num)+" to "+str(max_num))
+        plot.plot(sizes, times, label=str(min_num)+" to "+str(max_num), marker='o', linestyle='-')
         plot.xlabel("list size")
         plot.ylabel("time [s]")
         plot.legend()
         plot.show()
-    return times, sizes
+    return times, sizes, raw_times, raw_sizes
 
 
 # mode three, but for selected min_num and max_num pairs
-def mode_four(l, l_step, r, n, e, pairs):
+def mode_four(ls, l_step, r, n, e, pairs):
+    ax = plot.gca()
     for pair in pairs:
         min_num, max_num = pair
-        times, sizes = mode_three(l, l_step, r, n, min_num, max_num, e, do_plot=False)
-        plot.plot(sizes, times, label=str(min_num)+" to "+str(max_num))
+        times, sizes, rawt, raws = mode_three(ls, l_step, r, n, min_num, max_num, e, do_plot=False)
+        c = next(ax._get_lines.prop_cycler)['color']
+        plot.plot(sizes, times, label=str(min_num)+" to "+str(max_num), linestyle='-', lw=2, color=c)
+        plot.plot(raws, rawt, marker='+', ms=4, linestyle='', color=c)
 
+    plot.title(str(r) + " samples per point")
     plot.xlabel("list size")
     plot.ylabel("time [s]")
     plot.legend()
@@ -151,7 +155,7 @@ if __name__ == "__main__":
     parser.add_argument('-t', '--timer', help='Show time spent on main algorithm.', required=False, action='store_true')
     parser.add_argument('--evil', help='Random data generator stops being random and generates long lists of '
                                        'neighbouring numbers', required=False, action='store_true')
-    # TODO more args
+
     args = parser.parse_args()
 
     if args.verbose:

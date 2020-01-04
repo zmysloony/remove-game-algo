@@ -1,7 +1,12 @@
-from copy import copy, deepcopy
+from copy import copy
 import numpy as np
 
 debug = False
+
+
+def printd(*x):
+    if debug:
+        print(*x)
 
 
 def add(*args):
@@ -10,7 +15,7 @@ def add(*args):
 
 
 class Sublist:
-    alg_type = 0 # 1 - algo1; 0 - house robber
+    alg_type = 0    # 1 - algo1; 0 - house robber
     nums = []
     left = 0
     gains = np.array
@@ -68,7 +73,7 @@ class Sublist:
         return ret
 
     def max_score(self):
-        printd("\narray:",self.nums)
+        printd("\narray:", self.nums)
         if self.alg_type == 0:
             return house_robber(self)
         elif self.nums[len(self.nums) - 1] > 0:
@@ -94,26 +99,19 @@ class Sublist:
             score += house_robber(Sublist(self.nums[zero_i+1:], 0))
             scores.append(score)
 
-            #pre-delete
+            # pre-delete
             score = 0
             score += self.nums[zero_i+1]
             printd(Sublist(self.nums[0:zero_i], 1).nums, Sublist(self.nums[zero_i+3:], 0).nums)
             score += algo_two(Sublist(self.nums[0:zero_i], 1), 0)
             score += house_robber(Sublist(self.nums[zero_i+3:], 0))
             scores.append(score)
-
-            algo_one_score = algo_two(self, 0)
-            printd("scores with zero split:", scores)
-            printd("compared to normal", algo_one_score)
-            if algo_one_score > max(scores):
-                raise NameError("ZJEBANE split0: "+str(max(scores))+" normal: "+str(algo_one_score))
             return max(scores)
         else:
             self.calculate_gains()
             sc = algo_two(self, 0)
-            printd("just algo1:", sc)
+            printd("just algo2:", sc)
             return sc
-
 
 
 class GameArray:
@@ -142,8 +140,8 @@ class GameArray:
                 elif i == prev + 1:
                     prev = i
                     new_nums.append(i)
-                else: # new subarray
-                    if len(new_nums) is not 0: # decides which algo to use
+                else:   # new subarray
+                    if len(new_nums) is not 0:  # decides which algo to use
                         self.sublists.append(Sublist(copy(new_nums), 1 if new_nums[0] <= 0 else 0))
                     new_nums.clear()
                     prev = i
@@ -151,20 +149,13 @@ class GameArray:
 
             if len(new_nums) is not 0:  # decides which algo to use
                 self.sublists.append(Sublist(copy(new_nums), 1 if new_nums[0] <= 0 else 0))
-        # self.sublists = []
-        # self.sublists.append(Sublist([-3, -2, -1, 0, 1, 2, 3, 4, 20, 24, 7, 8, 9], 1))
         self.left = len(self.nums)
 
     def calc_max_score(self):
         total = 0
-        for l in self.sublists:
-            total += l.max_score()
+        for i in self.sublists:
+            total += i.max_score()
         return total
-
-
-def printd(*x):
-    if debug:
-        print(*x)
 
 
 def find_to_none(sublist):
@@ -187,8 +178,6 @@ def find_to_none(sublist):
 
 
 def algo_two(sublist, splitnr):
-    printd("\n\nALGO_TWO ENGAGED")
-    # temp = deepcopy(game_array)
     temp = Sublist.__new__(Sublist)
     temp.left = sublist.left
     temp.nums = copy(sublist.nums)
@@ -196,13 +185,11 @@ def algo_two(sublist, splitnr):
     res = 0
 
     while temp.left > 0:
-        max_gain_index = temp.get_max_gain()
-        m = temp.gains[max_gain_index]
         max_indices = find_to_none(temp)
         printd("\n", "\t"*splitnr, temp.nums)
-        printd("\t"*splitnr,"gains:", temp.gains)
-        printd("\t"*splitnr,"left:", temp.left)
-        printd("\t"*splitnr,"max indices:", max_indices)
+        printd("\t"*splitnr, "gains:", temp.gains)
+        printd("\t"*splitnr, "left:", temp.left)
+        printd("\t"*splitnr, "max indices:", max_indices)
         if len(max_indices) > 1:   # split paths
             splitnr += 1
             path_scores = []
@@ -226,58 +213,8 @@ def algo_two(sublist, splitnr):
             printd("\t"*(splitnr-1), stringmax)
             return res + max(path_scores)
         res += temp.remove_num(max_indices[0])
-        printd("\t"*splitnr,"score", res)
-        #print("\n\n", temp.nums, "\n", temp.gains)
-    printd("\t"*splitnr,"return from normal", res)
-    return res
-
-
-
-def algo_one(sublist, splitnr):
-    # temp = deepcopy(game_array)
-    temp = Sublist.__new__(Sublist)
-    temp.left = sublist.left
-    temp.nums = copy(sublist.nums)
-    temp.gains = copy(sublist.gains)
-    res = 0
-
-    while temp.left > 0:
-        max_gain_index = temp.get_max_gain()
-        m = temp.gains[max_gain_index]
-        if m is not int:
-            max_indices = [j for j, k in enumerate(temp.gains) if (k == m and temp.nums[j] is not None)]
-        else:
-            max_indices = max_gain_index
-        printd("\n", "\t"*splitnr, temp.nums)
-        printd("\t"*splitnr,"gains:", temp.gains)
-        printd("\t"*splitnr,"left:", temp.left)
-        printd("\t"*splitnr,"max indices:", max_indices)
-        if len(max_indices) > 1:   # split paths
-            splitnr += 1
-            path_scores = []
-            for i in max_indices:   # for each best removal value, calculate the best path
-                if temp.nums[i] is not None:
-                    cp = Sublist.__new__(Sublist)
-                    cp.nums = copy(temp.nums)
-                    cp.gains = copy(temp.gains)
-                    cp.left = copy(temp.left)
-                    removed_num = cp.nums[i]
-
-                    printd("\t" * splitnr, "[SPLITTING " + str(splitnr) + "] on " + str(i) + ": ")
-                    printd("\t"*splitnr, "score after split", res + removed_num)
-
-                    cp.remove_num(i)
-                    # print("algo_one(cp)", algo_one(cp), "removed num", removed_num)
-                    path_scores.append(removed_num + algo_one(cp, splitnr))
-            stringmax = "return from split " + str(splitnr) + ": "
-            for z in path_scores:
-                stringmax += str(z) + " or "
-            printd("\t"*(splitnr-1), stringmax)
-            return res + max(path_scores)
-        res += temp.remove_num(temp.get_max_gain())
-        printd("\t"*splitnr,"score", res)
-        #print("\n\n", temp.nums, "\n", temp.gains)
-    printd("\t"*splitnr,"return from normal", res)
+        printd("\t"*splitnr, "score", res)
+    printd("\t"*splitnr, "return from normal", res)
     return res
 
 
@@ -288,10 +225,6 @@ def house_robber(game_array):
 
     for i in arr:
         new_excl = excl if excl >= incl else incl
-        # Current max including i
         incl = excl + i
         excl = new_excl
-    # return max of incl and excl
     return excl if excl > incl else incl
-
-
