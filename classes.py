@@ -82,14 +82,14 @@ class Sublist:
             while self.nums[zero_i] != 0:
                 zero_i += 1
             printd(Sublist(self.nums[0:zero_i-1], 1).nums, Sublist(self.nums[zero_i+2:], 0).nums)
-            score += algo_one(Sublist(self.nums[0:zero_i-1], 1), 0)
+            score += algo_two(Sublist(self.nums[0:zero_i-1], 1), 0)
             score += house_robber(Sublist(self.nums[zero_i+2:], 0))
             scores.append(score)
 
             # pre-delete one before 0
             score = 0
             score += self.nums[zero_i-1]
-            score += algo_one(Sublist(self.nums[0:zero_i-2], 1), 0)
+            score += algo_two(Sublist(self.nums[0:zero_i-2], 1), 0)
             printd(Sublist(self.nums[0:zero_i-2], 1).nums, Sublist(self.nums[zero_i+1:], 0).nums)
             score += house_robber(Sublist(self.nums[zero_i+1:], 0))
             scores.append(score)
@@ -98,11 +98,11 @@ class Sublist:
             score = 0
             score += self.nums[zero_i+1]
             printd(Sublist(self.nums[0:zero_i], 1).nums, Sublist(self.nums[zero_i+3:], 0).nums)
-            score += algo_one(Sublist(self.nums[0:zero_i], 1), 0)
+            score += algo_two(Sublist(self.nums[0:zero_i], 1), 0)
             score += house_robber(Sublist(self.nums[zero_i+3:], 0))
             scores.append(score)
 
-            algo_one_score = -1000#algo_one(self, 0)
+            algo_one_score = algo_two(self, 0)
             printd("scores with zero split:", scores)
             printd("compared to normal", algo_one_score)
             if algo_one_score > max(scores):
@@ -110,7 +110,7 @@ class Sublist:
             return max(scores)
         else:
             self.calculate_gains()
-            sc = algo_one(self, 0)
+            sc = algo_two(self, 0)
             printd("just algo1:", sc)
             return sc
 
@@ -165,6 +165,72 @@ class GameArray:
 def printd(*x):
     if debug:
         print(*x)
+
+
+def find_to_none(sublist):
+    i = 0
+    lens = len(sublist.nums)
+    while sublist.nums[i] is None and i < lens:
+        i += 1
+    maxgain = sublist.gains[i]
+    maxindices = []
+
+    while i < lens and sublist.nums[i] is not None:
+        if sublist.gains[i] > maxgain:
+            maxgain = sublist.gains[i]
+            maxindices = []
+        if sublist.gains[i] == maxgain:
+            maxindices.append(i)
+        i += 1
+    printd("findtonone:", maxindices)
+    return maxindices
+
+
+def algo_two(sublist, splitnr):
+    printd("\n\nALGO_TWO ENGAGED")
+    # temp = deepcopy(game_array)
+    temp = Sublist.__new__(Sublist)
+    temp.left = sublist.left
+    temp.nums = copy(sublist.nums)
+    temp.gains = copy(sublist.gains)
+    res = 0
+
+    while temp.left > 0:
+        max_gain_index = temp.get_max_gain()
+        m = temp.gains[max_gain_index]
+        max_indices = find_to_none(temp)
+        printd("\n", "\t"*splitnr, temp.nums)
+        printd("\t"*splitnr,"gains:", temp.gains)
+        printd("\t"*splitnr,"left:", temp.left)
+        printd("\t"*splitnr,"max indices:", max_indices)
+        if len(max_indices) > 1:   # split paths
+            splitnr += 1
+            path_scores = []
+            for i in max_indices:   # for each best removal value, calculate the best path
+                if temp.nums[i] is not None:
+                    cp = Sublist.__new__(Sublist)
+                    cp.nums = copy(temp.nums)
+                    cp.gains = copy(temp.gains)
+                    cp.left = copy(temp.left)
+                    removed_num = cp.nums[i]
+
+                    printd("\t" * splitnr, "[SPLITTING " + str(splitnr) + "] on " + str(i) + ": ")
+                    printd("\t"*splitnr, "score after split", res + removed_num)
+
+                    cp.remove_num(i)
+                    # print("algo_one(cp)", algo_one(cp), "removed num", removed_num)
+                    path_scores.append(removed_num + algo_two(cp, splitnr))
+            stringmax = "return from split " + str(splitnr) + ": "
+            for z in path_scores:
+                stringmax += str(z) + " or "
+            printd("\t"*(splitnr-1), stringmax)
+            return res + max(path_scores)
+        res += temp.remove_num(max_indices[0])
+        printd("\t"*splitnr,"score", res)
+        #print("\n\n", temp.nums, "\n", temp.gains)
+    printd("\t"*splitnr,"return from normal", res)
+    return res
+
 
 
 def algo_one(sublist, splitnr):
