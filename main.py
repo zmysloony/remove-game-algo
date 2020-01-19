@@ -83,23 +83,26 @@ def mode_three(ls, l_step, r, n, min_num, max_num, e, do_plot=True):
     sizes = []
     raw_times = []
     raw_sizes = []
-    for i in range(n):
-        size = (ls + i*l_step)*(e**i)
-        t = 0
-        for j in range(r):
-            rand = gen_random(size, min_num, max_num)
-            start_time = time.perf_counter()
-            ga = GameArray(rand)
-            ga.preprocess(0)
-            ga.calc_max_score()
-            nt = time.perf_counter() - start_time
-            raw_times.append(nt)
-            raw_sizes.append(size)
-            t += nt
-        if verbose_mode:
-            print("Length:", size, "Time:", t/r, "s")
-        sizes.append(size)
-        times.append(t/r)
+    try:
+        for i in range(n):
+            size = (ls + i*l_step)*(e**i)
+            t = 0
+            for j in range(r):
+                rand = gen_random(size, min_num, max_num)
+                start_time = time.perf_counter()
+                ga = GameArray(rand)
+                ga.preprocess(0)
+                ga.calc_max_score()
+                nt = time.perf_counter() - start_time
+                raw_times.append(nt)
+                raw_sizes.append(size)
+                t += nt
+            if verbose_mode:
+                print("Length:", size, "Time:", t/r, "s")
+            sizes.append(size)
+            times.append(t/r)
+    except KeyboardInterrupt:
+        return times, sizes, raw_times, raw_sizes
     if do_plot:
         plot.plot(sizes, times, label=str(min_num)+" to "+str(max_num), marker='o', linestyle='-')
         plot.xlabel("list size")

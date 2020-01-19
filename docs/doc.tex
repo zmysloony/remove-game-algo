@@ -16,6 +16,7 @@
 
 %%% PACKAGES
 \usepackage{listings}
+\usepackage{polski}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{booktabs} % for much better looking tables
@@ -129,57 +130,61 @@ Dla każdego z tych podziałów część dodatnią rozwiązujemy algorytmem \tex
 \end{lstlisting}
 \end{description}
 
-\subsection{Złożoność}
+\subsection{Testowanie}
 \subsubsection{Złożoność obliczeniowa}
-Złożoność algorytmu \textsl{House Robber} jest liniowa, wymaga jedynie sortowania w pre-processingu danych. Stąd dla samych liczb dodanich złożoność obliczeniowa wynosi \textsl{O(nlogn)}.
+Złożoność algorytmu \textsl{House Robber} jest liniowa, wymaga jedynie sortowania w pre-processingu danych. Stąd dla samych liczb dodanich złożoność obliczeniowa wynosi \textsl{O(nlogn)}, co jest przedstawione na Rysunku \ref{rys1}.
 
 Złożoność obliczeniowa \textsl{Algorytmu I} jest równa \textsl{O(n!)}, o ile jesteśmy w stanie wygenerwować taką listę, aby przy każdej rekurencji wszystkie liczby miały tą samą wartość \textsl{BU}. Taka lista jest prawdopodobnie niemożliwa do wygenerowania.
 
-Ilość duplikatów w liście wstępnej ma znaczny wpływ na czas działania - przykładowo, jeżeli 50\% listy stanowią duplikaty, to efektywnie, nasze \textsl{n} jest mniejsze o 50%.
-Stąd, czym większa długość podlist utworzonych z listy wstępnej, tym znacznie większy czas obliczeń
-Formuła ta pozwala na otrzymanie przybliżonej długości łuku, który łączy dwa punktu na kuli, używając jako dane wejściowe szerokości i długości geograficznych obu punktów.
-\begin{center}
-\[ d = 2r \arcsin\left(\sqrt{\sin^2\left(\frac{\varphi_2 - \varphi_1}{2}\right) + \cos(\varphi_1) \cos(\varphi_2)\sin^2\left(\frac{\lambda_2 - \lambda_1}{2}\right)}\right) \]
-\end{center}
-W powyższym wzorze \textsl{r} to promień Ziemi, $\varphi$ i $\lambda$ to odpowiednio szerokości i długości geograficzne.
-\section{Implementacja}
-\subsection{Program}
-Skrypt zawierający algorytmy przyjmuje 4 argumenty : \\ 
-\textsl{<graf> <tryb> <początek> <cel>}\\
-przy czym tryby pracy programu są następujące:
-\begin{enumerate}
-\item
-alg. brutalny (przeszukiwanie wszystkich możliwych ścieżek)
-\item
-algorytm A* 
-\item
-algorytm Dijkstry
-\item
-A* oraz algorytm Dijkstry
-\item
-Wszystkie 3 algorytmy
-\item
-Tryb testowy, wymaga jedynie podania argumentów w postaci \textsl{<graf> 6 <ilość prób testowych>}. Porówuje wydajności A* oraz algorytmu Dijkstry na podstawie określonej ilości danych testowych (generowanych automatycznie).
-\end{enumerate}
-Wynikiem działania dla wszystkich opcji są ścieżki, jej koszt (odległość) oraz czas działania. Czas działania jest mierzony tylko w momencie działania algorytmu. Funkcja heurystyczna korzysta z formuły haversine obliczającą odległość w linii prostej po powierzchni sfery pomiędzy miastami. Funkcja ta spełnia wymagania heurystyki w algorytmie A* gdyż stanowi dolne ograniczenie odległości pomiędzy miastami \textsl{[nie da się dotrzeć szybciej niż w linii prostej]}
-\subsection{Testy działania}
-Poniższa tabelka przedstawia czasy działania algorytmu dla jednej procesu wyszukiwania jednej ścieżki, uśrednione na podstawie 10000 powtórzeń dla A* i algorytmu Dijkstry.
-\begin{table}[h!]
+Ilość duplikatów w liście wstępnej ma znaczny wpływ na czas działania - przykładowo, jeżeli 50\% listy stanowią duplikaty, to efektywnie, nasze \textsl{n} jest mniejsze o 50\%.
+Stąd, czym większa długość podlist utworzonych z listy wstępnej, tym znacznie większy czas obliczeń.
+
+Na Rysunku 2 można zaobserwować wpływ \textsl{Algorytmu I} dla wartości bliskich 0 - gwałtowny wzrost czasu wykonania, aż do momentu, kiedy ilość liczb będzie większa od liczności zakresu z którego te liczby są generowane. Widać, że po tym wzroście, wpływ na kształt funkcji ma jedynie sortowanie liczb z listy początkowej. Dzieje się tak dlatego, że po sortowaniu i usunięciu duplikatów możemy otrzymać zbiór, który maksymalnie ma liczność taką samą jak zakres generacji - czas działania \textsl{Algorytmu I} jest z grubsza niezmienny.
+
+\subsubsection{Testowanie dla ciągłych list}
+Lista ciągła to lista wstępna, która po sortowaniu i usunięciu duplikatów daje tylko jedną, długą podlistę. Takie listy gwarantują, że część ujemnych liczb będzie liczona przez tylko jedno uruchomienie \textsl{Algorytmu I}, co pozwala lepiej zobrazować jego złożoność obliczeniową.
+
+Wykres efektu testowania takich list jest przedstawiony na Rysunku 3. Możemy zaobserwować pojedyncze listy, dla których algorytm wykonywał się w czasie o kilka rzędów wielkości większym niż średnia. Są to przypadki, dla których \textsl{Algorytm I} często musi się rozgałęziać poprzez rekurencję, innymi słowy - częste są sytuacje, w których BU jest równe dla dużej ilości liczb pozostałych w liście.
+
+Program potrafi generować takie listy po podaniu opcji -\textsl{-evil}.
+
+Interesującym porównaniem jest Rysunek 4. Tutaj liczby generowane są losowo, z równym prawdopodobieństwem, więc ilość podlist również jest losowa. Porównując linię czerwoną i zieloną, możemy zaobserwować, że od pewnego momentu, czas wykonania dla mniejszego zakresu liczb zaczyna być większy (długość listy ok. 13000). Sugeruje to, że dla zakresu [-1000, 1000] zaczynają się generować bardzo długie ciągi liczb sąsiednich, przez co czas wykonania \textsl{Algorytmu I} znacznie wzrasta. Dla tej samej długości listy, ale zakresu [-3000, 3000], istnieje mniejsze prawdopodobieństwo utworzenia równie długich ciągów sąsiednich liczb. Jednak dla jeszcze większych długości listy (nie przedstawionych na Rysunku 4), zagęszczenie liczb z zakresu reprezentowanego przez czerwoną linię będzie wystarczająco duże, żeby często tworzyć ciągi sąsiadów dłuższe niż 1000 (maksymalny ciąg ujemnych sąsiadów dla zakresu [-1000, 1000]) i od tego momentu czas wykonania będzie z powrotem większy.
+
+
+\begin{figure}[h]
+\caption{Czas działania algorytmu dla list liczb dodanich}
+\label{rys1}
 \centering
-\begin{tabular}{ ||p{3cm}||p{5cm}|p{5cm}||  }
-\hline
-\multicolumn{3}{|c|}{Uśrednione wyniki} \\
-\hline
-Algorytm & średni czas dla grafu Polska & średni czas dla Germany50 \\
-\hline
-Brutalny &375 $\mu s$ &>15 minut \\
-Dijkstra &19 $\mu s$ &87 $\mu s$ \\
-A* &25 $\mu s$ &41 $\mu s$ \\
-\hline
-\end{tabular}
-\end{table}
-\subsection{Analiza wyników}
-Algorytm Dijkstry oraz \textsl{A*} są zdecydowanie szybsze od podejścia brutalnego, którego użycie dla grafów o większej ilości krawędzi i wierzchołków może prowadzić do złożoności \textsl{O(n!)}. Dodatkowo dzięki zastosowaniu algorytmu heurystycznego algorytm \textsl{A*} sprawdza jedynie potencjalnie najlepsze ścieżki co ogranicza \textsl{rozprzestrzenianie} się algorytmu i zdecydowanie przyspiesza jego pracę dla odpowiednio dużych grafów. Jako, że funkcja haversine jest umiarkowanie skomplikowaną formułą to dla mapy Polski z 12 miastami i 18 krawędziami wzrost wydajności jest znikomy, ale już dla bardziej realistycznego zastosowania, w grafie dla mapy Niemiec, o 50 wierzchołkach znajduje dłuższe trasy szybciej.
+\includegraphics[scale=0.8]{50samples50000_0_25000}
+\end{figure}
 
+\begin{figure}[h]
+\caption{Czas działania algorytmu dla list liczb ujemnych}
+\label{rys2}
+\centering
+\includegraphics[scale=0.8]{50samples30000_-100_-1100}
+\end{figure}
 
+\begin{figure}[h]
+\caption{Czas działania algorytmu dla listy, która zawiera tylko jedną, długą podlistę. Listy zaczynają się od -100, -1000 lub -10000}
+\label{rys3}
+\centering
+\includegraphics[scale=0.8]{bigboy}
+\end{figure}
+
+\begin{figure}[h]
+\caption{Wpływ zagęszczenia i długich podlist na czas wykonania}
+\label{rys4}
+\centering
+\includegraphics[scale=0.8]{sparsity}
+\end{figure}
+
+\subsubsection{Program}
+Program potrafi działać w 4 trybach, definiowanych przez podanie opcji \textsl{-m <tryb>}.
+\paragraph{Tryb 1} Odczytuje dane z stdin, każdą linię interpretując jako jedną instancję problemu (jedną listę liczb). Można go używać jako tryb interaktywny odczytujący dane z klawiatury lub wsadowy, jeśli dane mamy w pliku.
+\paragraph{Tryb 2} Program sam generuje jedną instancję danych losowych o parametrach, takich jak np. zakres liczb, ilość liczb w liście.
+\paragraph{Tryb 3} Program generuje dane losowe i testuje czasy działania algorytmu dla rosnącej ilości liczb w liście. Możliwe jest wyświetlenie wyniku działania na wykresie.
+\paragraph{Tryb 4} Program przyjmuje na wejście pary liczb, które definiują zakres generacji liczb w liście wstępnej. Dla każdego zakresu wykonywany jest Tryb 3 programu, a końcowy wynik przedstawiany jest na wykresie. Tryb 4 najlepiej służy jako narzędzie do kompleksowego sprawdzania złożoności \textsl{Algorytmu I}.
+
+Wszystkie atrybuty, które użytkownik może modyfikować są dostępne po podaniu opcji (\textsl{-\phantom{}-help} \textsl{python main.py -\phantom{}-help}).
 \end{document}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.11.30)  19 JAN 2020 18:28
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.11.30)  19 JAN 2020 21:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -426,7 +426,11 @@ File: listings.cfg 2015/06/04 1.6 listings configuration
 ))
 Package: listings 2015/06/04 1.6 (Carsten Heinz)
 
-(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+(/usr/share/texlive/texmf-dist/tex/latex/polski/polski.sty
+Package: polski 2017/05/04 v1.3.4 Polish language package
+
+   Inputenc package detected. Catcodes not changed.
+) (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
 Package: amsmath 2017/09/02 v2.17a AMS math features
 \@mathmargin=\skip43
 
@@ -585,18 +589,18 @@ s
 ) (./doc.aux)
 \openout1 = `doc.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 63.
-LaTeX Font Info:    ... okay on input line 63.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 63.
-LaTeX Font Info:    ... okay on input line 63.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 63.
-LaTeX Font Info:    ... okay on input line 63.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 63.
-LaTeX Font Info:    ... okay on input line 63.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 63.
-LaTeX Font Info:    ... okay on input line 63.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 63.
-LaTeX Font Info:    ... okay on input line 63.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 64.
+LaTeX Font Info:    ... okay on input line 64.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 64.
+LaTeX Font Info:    ... okay on input line 64.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 64.
+LaTeX Font Info:    ... okay on input line 64.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 64.
+LaTeX Font Info:    ... okay on input line 64.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 64.
+LaTeX Font Info:    ... okay on input line 64.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 64.
+LaTeX Font Info:    ... okay on input line 64.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -701,81 +705,107 @@ e
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: subfig package v1.3 is loaded.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Font Info:    Try loading font information for U+msa on input line 64.
+LaTeX Font Info:    Try loading font information for U+msa on input line 65.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 64.
+LaTeX Font Info:    Try loading font information for U+msb on input line 65.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-Overfull \hbox (7.71706pt too wide) in paragraph at lines 70--71
-[]\T1/cmr/m/n/10.95 Problem polega na znalezie-niu maksy-mal-nej liczby punk-tó
-w do zdoby-cia dla konkret-nej listy. 
- []
-
-
-Overfull \hbox (20.12466pt too wide) in paragraph at lines 79--81
-\T1/cmr/m/n/10.95 wszys-tkie wys-t¡pi-enia i za-st¦pu-j¡c je t¡ wªa±nie sum¡. N
-a przykªad dla \T1/cmr/m/sl/10.95 N3 = [1,1,2,3,3,3,4,4,4,6,7,7,8]
+Overfull \hbox (18.10979pt too wide) in paragraph at lines 80--82
+\T1/cmr/m/n/10.95 wszyst-kie wy-st¡-pie-nia i za-st¦-pu-j¡c je t¡ wªa-±nie su-m
+¡. Na przy-kªad dla \T1/cmr/m/sl/10.95 N3 = [1,1,2,3,3,3,4,4,4,6,7,7,8]
  []
 
 [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 87.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 88.
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 87.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 88.
 
 (/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2015/06/04 1.6 listings language file
 )
-Underfull \hbox (badness 10000) in paragraph at lines 111--113
+Underfull \hbox (badness 10000) in paragraph at lines 112--114
 
  []
 
 [2]
-Overfull \hbox (5.57138pt too wide) in paragraph at lines 120--121
+Overfull \hbox (5.57138pt too wide) in paragraph at lines 121--122
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][] 
  []
 
 
-Overfull \hbox (5.57138pt too wide) in paragraph at lines 121--122
+Overfull \hbox (5.57138pt too wide) in paragraph at lines 122--123
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
-[3] [4] (./doc.aux) ) 
+[3]
+<50samples50000_0_25000.png, id=23, 462.528pt x 346.896pt>
+File: 50samples50000_0_25000.png Graphic file (type png)
+<use 50samples50000_0_25000.png>
+Package pdftex.def Info: 50samples50000_0_25000.png  used on input line 158.
+(pdftex.def)             Requested size: 370.02289pt x 277.51717pt.
+<50samples30000_-100_-1100.png, id=25, 462.528pt x 346.896pt>
+File: 50samples30000_-100_-1100.png Graphic file (type png)
+<use 50samples30000_-100_-1100.png>
+Package pdftex.def Info: 50samples30000_-100_-1100.png  used on input line 165.
+
+(pdftex.def)             Requested size: 370.02289pt x 277.51717pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<bigboy.png, id=26, 462.528pt x 346.896pt>
+File: bigboy.png Graphic file (type png)
+<use bigboy.png>
+Package pdftex.def Info: bigboy.png  used on input line 172.
+(pdftex.def)             Requested size: 370.02289pt x 277.51717pt.
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<sparsity.png, id=27, 462.528pt x 346.896pt>
+File: sparsity.png Graphic file (type png)
+<use sparsity.png>
+Package pdftex.def Info: sparsity.png  used on input line 179.
+(pdftex.def)             Requested size: 370.02289pt x 277.51717pt.
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[4 <./50samples50000_0_25000.png>] [5 <./50samples30000_-100_-1100.png>]
+[6 <./bigboy.png> <./sparsity.png>] (./doc.aux) ) 
 Here is how much of TeX's memory you used:
- 6803 strings out of 492982
- 92650 string characters out of 6134895
- 181179 words of memory out of 5000000
- 10260 multiletter control sequences out of 15000+600000
+ 6920 strings out of 492982
+ 94089 string characters out of 6134895
+ 183260 words of memory out of 5000000
+ 10368 multiletter control sequences out of 15000+600000
  16062 words of font info for 46 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 44i,11n,43p,782b,1680s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-t1.enc
-}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr
-/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share
-/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texliv
-e/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-
-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/f
-onts/type1/public/amsfonts/symbols/msam10.pfb></usr/share/texmf/fonts/type1/pub
-lic/cm-super/sfbx1095.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx120
-0.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx1440.pfb></usr/share/te
-xmf/fonts/type1/public/cm-super/sfrm1095.pfb></usr/share/texmf/fonts/type1/publ
-ic/cm-super/sfrm1200.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1728
-.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfsl1095.pfb>
-Output written on doc.pdf (4 pages, 201051 bytes).
+ 44i,11n,43p,1067b,1692s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texmf/fonts/enc/dv
+ips/cm-super/cm-super-t1.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/
+amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfon
+ts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/c
+msy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/ms
+am10.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx1095.pfb></usr/share
+/texmf/fonts/type1/public/cm-super/sfbx1200.pfb></usr/share/texmf/fonts/type1/p
+ublic/cm-super/sfbx1440.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1
+095.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1200.pfb></usr/share/
+texmf/fonts/type1/public/cm-super/sfrm1728.pfb></usr/share/texmf/fonts/type1/pu
+blic/cm-super/sfsl1095.pfb>
+Output written on doc.pdf (6 pages, 333442 bytes).
 PDF statistics:
- 70 PDF objects out of 1000 (max. 8388607)
- 50 compressed objects within 1 object stream
+ 77 PDF objects out of 1000 (max. 8388607)
+ 49 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 21 words of extra memory for PDF output out of 10000 (max. 10000000)
 
