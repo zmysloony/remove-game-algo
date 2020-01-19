@@ -1,0 +1,185 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+
+\documentclass[11pt]{article} % use larger type; default would be 10pt
+
+\usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
+\usepackage[T1]{fontenc} %font encoding ? --> need to clarify that
+
+%%% PAGE DIMENSIONS
+\usepackage{geometry} % to change the page dimensions
+\geometry{a4paper} % or letterpaper (US) or a5paper or....
+\geometry{margin=1in} % for example, change the margins to 2 inches all round
+
+\usepackage{graphicx} % support the \includegraphics command and options
+\usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
+
+%%% PACKAGES
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs} % for much better looking tables
+\usepackage{array} % for better arrays (eg matrices) in maths
+\usepackage{paralist} % very flexible & customisable lists (eg. enumerate/itemize, etc.)
+\usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
+\usepackage{subfig} % make it possible to include more than one captioned figure/table in a single float
+% These packages are all incorporated in the memoir class to one degree or another...
+\lstset{
+  literate={ą}{{\k a}}1
+  		     {Ą}{{\k A}}1
+           {ż}{{\. z}}1
+           {Ż}{{\. Z}}1
+           {ź}{{\' z}}1
+           {Ź}{{\' Z}}1
+           {ć}{{\' c}}1
+           {Ć}{{\' C}}1
+           {ę}{{\k e}}1
+           {Ę}{{\k E}}1
+           {ó}{{\' o}}1
+           {Ó}{{\' O}}1
+           {ń}{{\' n}}1
+           {Ń}{{\' N}}1
+           {ś}{{\' s}}1
+           {Ś}{{\' S}}1
+           {ł}{{\l}}1
+           {Ł}{{\L}}1
+}
+%%% HEADERS & FOOTERS
+\usepackage{fancyhdr} % This should be set AFTER setting up the page geometry
+\pagestyle{fancy} % options: empty , plain , fancy
+\renewcommand{\headrulewidth}{0pt} % customise the layout...
+\lhead{}\chead{}\rhead{}
+\lfoot{}\cfoot{\thepage}\rfoot{}
+%%% END Article customizations
+
+%%% The "real" document content comes below...
+
+\title{Usuń i wygraj - projekt AAL\\
+\large Dokumentacja końcowa}
+\author{Piotr Zmyślony, nr albumu 268833}
+\date{} % Activate to display a given date or no date (if empty),
+         % otherwise the current date is printed 
+
+\begin{document}
+\maketitle
+
+\section{Opis problemu}
+\subsection{Treść zadania}
+Gra „Usuń i wygraj” polega na uzyskaniu jak największego wyniku przy sukcesywnym usuwaniu liczb z (ustalonej przed rozpoczęciem gry) listy liczb całkowitych \textsl{N}, dopóki nie pozostanie nam zbiór pusty. Operacja usunięcia liczby \textsl{N[i]} powoduje uzyskanie liczby punktów równej wybranej liczbie. Po usunięciu jednej liczby, wszystkie dwie sąsiednie (\textsl{N[i]-1} oraz \textsl{N[i]+1}) liczby, jeśli istnieją, również są usuwane - tym razem bez uzyskiwania jakichkolwiek punktów.
+
+Problem polega na znalezieniu maksymalnej liczby punktów do zdobycia dla konkretnej listy.
+\subsection{Analiza}
+\subsubsection{Warianty listy}
+Pierwszym krokiem jest posortowanie listy wstępnej rosnąco, co znacząco ułatwi dalszą analizę zagadnienia, stąd dalej przedstawione listy będą już posortowane.
+
+Przypadkiem trywialnym problemu jest taka lista unikalnych liczb, w której  żadna z liczb nie posiada sąsiadów, na przykład \textsl{N1 = [-3,-1,1,3,5,7]}. W takim wypadku kolejność wyboru liczb nie ma znaczenia, ponieważ nigdy nie „tracimy” punktów poprzez usuwanie.
+
+Przypadkiem ogólnym jest lista, w której liczby mogą posiadać sąsiadów,  na  przykład \textsl{N2 = [-10,-9,-8,1,2,3,4,5,7,8,9]}. Teraz musimy rozważać rozłączne, rosnące listy liczb sąsiadujących. Lista \textsl{N2} rozkłada się na listy: \textsl{[-10,-9,-8]}, \textsl{[1,2,3,4,5]}, \textsl{[7,8,9]}. Wynikiem jest suma maksymalnych ilości punktów, jaką można uzyskać w każdej z podlist.
+\subsubsection{Problem duplikatów}
+Problem duplikatów, czyli liczb występujących w liście po klika razy, można rozwiązać sumując wszystkie wystąpienia i zastępując je tą właśnie sumą. Na przykład dla \textsl{N3 = [1,1,2,3,3,3,4,4,4,6,7,7,8]} dostajemy: \textsl{[2,2,9,12]}, \textsl{[6,14,8]}.
+Dla tych list, operacja usuwania zmienia się nieznacznie - usunięcie liczby \textsl{N[i]} powoduje usunięcie \textsl{N[i-1]} i \textsl{N[i+1]}.
+\section{Algorytm}
+\subsection{Przetwarzanie wstępne danych}
+Na wstępie algorytm dostaje listę liczb całkowitych i tworzy rozłączne listy sąsiadujących i posortowanych rosnąco liczb. Na każdej z nich dokonywana jest operacja usuwania duplikatów opisana powyżej. Wynik sumaryczny właściwego algorytmu (opisanego poniżej) dla każdej z list jest odpowiedzią na to, jaki jest maksymalny możliwy do uzyskania wynik na liście początkowej.
+\subsection{Działanie algorytmu}
+Na początku algorytm dokonuje sprawdzenia, jakiego typu jest lista, czyli porównuje pierwszą (\textsl{min}) i ostatnią (\textsl{max}) liczbę w liście \textsl{N}
+\begin{itemize}
+  \item \textbf{Typ A} - \( min \geqslant 0\)
+  \item \textbf{Typ B} - \( min < 0 \)	
+\end{itemize}
+\subsubsection{Rozwiązanie dla typu A}
+Jest to najprostszy z przypadków, którego rozwiązanie ma złożoność \textsl{O(n)}. Służy do tego poniższy algorytm:
+\begin{description}
+\item[Algorytm House Robber:]\leavevmode
+\begin{lstlisting}[language=Python]
+def house_robber(array):
+    incl = 0
+    excl = 0
+
+    for i in array:
+        new_excl = excl if excl >= incl else incl
+        incl = excl + i
+        excl = new_excl
+    return excl if excl > incl else incl
+\end{lstlisting}
+\end{description}
+\subsubsection{Rozwiązanie dla typu B}
+W tym wypadku algorytm powyższy (nawet z modyfikacjami) nie jest w stanie policzyć największej wartości.
+
+W pierwszym kroku, sprawdzamy czy lista posiada również wartości większe bądź równe 0. Jeśli nie, wynik daje nam rekurencyjny \textsl{Algorytm I} opisany pokrótce poniżej. 
+
+Jeżeli tak - część rozwiązania dla liczb nieujemnych możemy dostać poprzez algorytm \textsl{House Robber}. Istnieją 3 możliwe sposoby podziału takiej listy: usuwamy 0, usuwamy liczbę na lewo od 0, usuwamy liczbę na prawo od 0.
+Dla każdego z tych podziałów część dodatnią rozwiązujemy algorytmem \textsl{House Robber}, a część ujemną \textsl{Algorytmem I}. Z tych 3 wyników wybieramy największy jako końcowy.\\
+
+\begin{description}
+\item[Algorytm I:]\leavevmode
+\begin{lstlisting}
+1. wynik := 0
+2. Sprawdź które liczby mają maksymalny BU*.
+3. Jeśli jest tylko jedna liczba M[i] o największym BU, 
+   wynik += M[i], usuń M[i-1], M[i] i M[i+1] i przejdź do kroku 2.
+4. Utwórz tablicę max[n], gdzie n to ilość liczb o maksymalnym BU.
+5. Dla każdego i=0..(n-1) kolejno: 
+ 5.1. z := rezultat Algorytmu I dla listy bez M[i] i sąsiadów
+ 5.2. max[i] := wynik + M[i] + z.
+6. wynik += maksymalna wartość z tablicy max[]
+7. Zwróć wynik.
+
+*Bilans Usunięcia dla liczby N[i] równy jest N[i]-N[i-1]-N[i+1].
+\end{lstlisting}
+\end{description}
+
+\subsection{Złożoność}
+\subsubsection{Złożoność obliczeniowa}
+Złożoność algorytmu \textsl{House Robber} jest liniowa, wymaga jedynie sortowania w pre-processingu danych. Stąd dla samych liczb dodanich złożoność obliczeniowa wynosi \textsl{O(nlogn)}.
+
+Złożoność obliczeniowa \textsl{Algorytmu I} jest równa \textsl{O(n!)}, o ile jesteśmy w stanie wygenerwować taką listę, aby przy każdej rekurencji wszystkie liczby miały tą samą wartość \textsl{BU}. Taka lista jest prawdopodobnie niemożliwa do wygenerowania.
+
+Ilość duplikatów w liście wstępnej ma znaczny wpływ na czas działania - przykładowo, jeżeli 50\% listy stanowią duplikaty, to efektywnie, nasze \textsl{n} jest mniejsze o 50%.
+Stąd, czym większa długość podlist utworzonych z listy wstępnej, tym znacznie większy czas obliczeń
+Formuła ta pozwala na otrzymanie przybliżonej długości łuku, który łączy dwa punktu na kuli, używając jako dane wejściowe szerokości i długości geograficznych obu punktów.
+\begin{center}
+\[ d = 2r \arcsin\left(\sqrt{\sin^2\left(\frac{\varphi_2 - \varphi_1}{2}\right) + \cos(\varphi_1) \cos(\varphi_2)\sin^2\left(\frac{\lambda_2 - \lambda_1}{2}\right)}\right) \]
+\end{center}
+W powyższym wzorze \textsl{r} to promień Ziemi, $\varphi$ i $\lambda$ to odpowiednio szerokości i długości geograficzne.
+\section{Implementacja}
+\subsection{Program}
+Skrypt zawierający algorytmy przyjmuje 4 argumenty : \\ 
+\textsl{<graf> <tryb> <początek> <cel>}\\
+przy czym tryby pracy programu są następujące:
+\begin{enumerate}
+\item
+alg. brutalny (przeszukiwanie wszystkich możliwych ścieżek)
+\item
+algorytm A* 
+\item
+algorytm Dijkstry
+\item
+A* oraz algorytm Dijkstry
+\item
+Wszystkie 3 algorytmy
+\item
+Tryb testowy, wymaga jedynie podania argumentów w postaci \textsl{<graf> 6 <ilość prób testowych>}. Porówuje wydajności A* oraz algorytmu Dijkstry na podstawie określonej ilości danych testowych (generowanych automatycznie).
+\end{enumerate}
+Wynikiem działania dla wszystkich opcji są ścieżki, jej koszt (odległość) oraz czas działania. Czas działania jest mierzony tylko w momencie działania algorytmu. Funkcja heurystyczna korzysta z formuły haversine obliczającą odległość w linii prostej po powierzchni sfery pomiędzy miastami. Funkcja ta spełnia wymagania heurystyki w algorytmie A* gdyż stanowi dolne ograniczenie odległości pomiędzy miastami \textsl{[nie da się dotrzeć szybciej niż w linii prostej]}
+\subsection{Testy działania}
+Poniższa tabelka przedstawia czasy działania algorytmu dla jednej procesu wyszukiwania jednej ścieżki, uśrednione na podstawie 10000 powtórzeń dla A* i algorytmu Dijkstry.
+\begin{table}[h!]
+\centering
+\begin{tabular}{ ||p{3cm}||p{5cm}|p{5cm}||  }
+\hline
+\multicolumn{3}{|c|}{Uśrednione wyniki} \\
+\hline
+Algorytm & średni czas dla grafu Polska & średni czas dla Germany50 \\
+\hline
+Brutalny &375 $\mu s$ &>15 minut \\
+Dijkstra &19 $\mu s$ &87 $\mu s$ \\
+A* &25 $\mu s$ &41 $\mu s$ \\
+\hline
+\end{tabular}
+\end{table}
+\subsection{Analiza wyników}
+Algorytm Dijkstry oraz \textsl{A*} są zdecydowanie szybsze od podejścia brutalnego, którego użycie dla grafów o większej ilości krawędzi i wierzchołków może prowadzić do złożoności \textsl{O(n!)}. Dodatkowo dzięki zastosowaniu algorytmu heurystycznego algorytm \textsl{A*} sprawdza jedynie potencjalnie najlepsze ścieżki co ogranicza \textsl{rozprzestrzenianie} się algorytmu i zdecydowanie przyspiesza jego pracę dla odpowiednio dużych grafów. Jako, że funkcja haversine jest umiarkowanie skomplikowaną formułą to dla mapy Polski z 12 miastami i 18 krawędziami wzrost wydajności jest znikomy, ale już dla bardziej realistycznego zastosowania, w grafie dla mapy Niemiec, o 50 wierzchołkach znajduje dłuższe trasy szybciej.
+
+
+\end{document}
