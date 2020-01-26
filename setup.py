@@ -1,3 +1,5 @@
+# AAL - usun i wygraj
+# Autor: Piotr Zmyslony
 from distutils.core import setup
 from Cython.Build import cythonize
 import numpy

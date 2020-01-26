@@ -1,3 +1,5 @@
+# AAL - usun i wygraj
+# Autor: Piotr Zmyslony
 from math import log
 from random import randrange
 

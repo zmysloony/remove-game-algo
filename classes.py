@@ -1,3 +1,5 @@
+# AAL - usun i wygraj
+# Autor: Piotr Zmyslony
 from copy import copy
 import numpy as np
 import findmax
