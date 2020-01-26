@@ -1,3 +1,4 @@
+from math import log
 from random import randrange
 
 from classes import *
@@ -5,6 +6,8 @@ import argparse
 import sys
 import time
 import matplotlib.pyplot as plot
+from tabulate import tabulate
+from statistics import median
 
 
 def gen_random(size, min_num, max_num):
@@ -109,6 +112,27 @@ def mode_three(ls, l_step, r, n, min_num, max_num, e, do_plot=True):
         plot.ylabel("time [s]")
         plot.legend()
         plot.show()
+
+    med = round(median(sizes))
+    c = 0
+    if len(times) % 2 == 0:   # we have to calculate the median for a new value
+        rand = gen_random(med, min_num, max_num)
+        start_time = time.perf_counter()
+        ga = GameArray(rand)
+        ga.preprocess(0)
+        ga.calc_max_score()
+        nt = time.perf_counter() - start_time
+        c = nt / (log(med) * med)
+    else:
+        c = times.index(int(med)) / (log(med) * med)
+
+    q = []
+    print("Algorytm z asymptotą O(nlog(n))")
+    tablerow = []
+    for t, n in zip(times, sizes):
+        q.append(t/(log(n)*n*c))
+        tablerow.append((n, t*1000, t/(log(n)*n*c)))
+    print(tabulate(tablerow, headers=['n', 't(n)[ms]', 'q(n)'], tablefmt='orgtbl'))
     return times, sizes, raw_times, raw_sizes
 
 
